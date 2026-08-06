@@ -87,6 +87,36 @@ export default function Dashboard() {
 
       {data && (
         <>
+          {/* PLV Latente banner */}
+          {data.engageLT > 0 && (
+            <div style={{
+              borderRadius: '14px', padding: '18px 24px', marginBottom: '20px',
+              background: 'linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%)',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              boxShadow: '0 4px 16px rgba(37,99,235,0.25)',
+            }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                <p style={{ fontSize: '12px', fontWeight: 600, color: 'rgba(255,255,255,0.7)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                  Paris Longs Termes en cours
+                </p>
+                <p style={{ fontSize: '13.5px', color: 'rgba(255,255,255,0.9)' }}>
+                  {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(data.engageLT)} engagé{data.engageLT > 1 ? 's' : ''}
+                </p>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <p style={{ fontSize: '11px', fontWeight: 600, color: 'rgba(255,255,255,0.65)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '2px' }}>
+                  PLV Latente
+                </p>
+                <p style={{
+                  fontSize: '26px', fontWeight: 800, color: '#FFFFFF',
+                  fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.02em',
+                }}>
+                  {data.plvLT >= 0 ? '+' : ''}{new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(data.plvLT)}
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Row 1 — 4 KPIs principaux */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '16px' }}>
             <KpiCard

@@ -97,7 +97,7 @@ export default function ParisPage() {
       await api.delete(`/paris/${pari.id}`);
       undoRef.current = null;
       setUndoItem(null);
-    }, 6000);
+    }, 15000);
     const item = { pari, timer };
     undoRef.current = item;
     setUndoItem(item);

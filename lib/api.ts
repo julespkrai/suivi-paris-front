@@ -49,8 +49,19 @@ export const api = {
 export interface DashboardData {
   pl: number; roi: number | null; mise: number; miseReglee: number;
   engage: number; pot: number; bankroll: number; dep: number; ret: number; net: number;
+  plvLT: number; engageLT: number;
   semaine: Record<string, number>; semaineDebut: string;
   counts: { paris: number; parisOuverts: number; combis: number; loto: number };
+}
+
+export interface CommunityPari {
+  id: number; pseudo: string; canal: string; sport?: string; competition?: string;
+  description?: string; cote: number; mise: number; statut: string; date: string;
+}
+
+export interface CorbeilleItem {
+  type: 'pari' | 'depot' | 'combi' | 'loto';
+  id: number; label: string; detail: string; date: string; deletedAt: string;
 }
 
 export interface Pari {

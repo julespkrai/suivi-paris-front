@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth';
-import { TrendingUp, BarChart3, Wallet, Layers, Trophy, LogOut, ChevronRight } from 'lucide-react';
+import { TrendingUp, BarChart3, Wallet, Layers, Trophy, LogOut, ChevronRight, Users, Trash2 } from 'lucide-react';
 
 const nav = [
   { href: '/dashboard', label: 'Dashboard', icon: BarChart3 },
@@ -10,6 +10,8 @@ const nav = [
   { href: '/combis', label: 'Paris Longs Termes', icon: Layers },
   { href: '/depots', label: 'Dépôts', icon: Wallet },
   { href: '/loto', label: 'Loto Foot', icon: Trophy },
+  { href: '/community', label: 'Communauté', icon: Users },
+  { href: '/corbeille', label: 'Corbeille', icon: Trash2 },
 ];
 
 export default function Sidebar() {
