@@ -14,14 +14,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F1F5F9' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '14px' }}>
           <div style={{
-            width: '36px', height: '36px', borderRadius: '50%',
-            border: '2px solid var(--blue)', borderTopColor: 'transparent',
-            animation: 'spin 0.7s linear infinite'
+            width: '38px', height: '38px', borderRadius: '50%',
+            border: '2.5px solid #2563EB', borderTopColor: 'transparent',
+            animation: 'spin 0.7s linear infinite',
           }} />
-          <span style={{ fontSize: '13px', color: 'var(--muted)' }}>Chargement…</span>
+          <span style={{ fontSize: '13px', color: '#64748B', fontWeight: 500 }}>Chargement…</span>
         </div>
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
@@ -31,10 +31,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   if (!user) return null;
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg)' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', background: '#F1F5F9' }}>
       <Sidebar />
       <main style={{ flex: 1, marginLeft: '240px', minHeight: '100vh' }}>
-        <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '36px 32px' }}>
+        <div style={{ maxWidth: '1120px', margin: '0 auto', padding: '40px 36px' }}>
           {children}
         </div>
       </main>

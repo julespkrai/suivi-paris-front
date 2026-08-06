@@ -10,6 +10,7 @@ interface Props {
   subtitle?: string;
   icon?: React.ReactNode;
   delay?: number;
+  accent?: string;
 }
 
 function fmt(value: number, format: Props['format']) {
@@ -18,28 +19,35 @@ function fmt(value: number, format: Props['format']) {
   return new Intl.NumberFormat('fr-FR').format(value);
 }
 
-export default function KpiCard({ label, value, format = 'currency', positive, subtitle, icon, delay = 0 }: Props) {
+export default function KpiCard({ label, value, format = 'currency', positive, subtitle, icon, delay = 0, accent }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const numRef = useRef<HTMLSpanElement>(null);
 
-  const color = value === null || positive === null
-    ? 'var(--text)'
-    : positive
-      ? 'var(--green)'
-      : 'var(--red)';
+  let color = '#0F172A';
+  let bg = '#FFFFFF';
+  let iconBg = '#F1F5F9';
+  let iconColor = '#64748B';
 
-  const borderColor = value === null || positive === null
-    ? 'rgba(255,255,255,0.07)'
-    : positive
-      ? 'rgba(0,230,118,0.18)'
-      : 'rgba(255,61,113,0.18)';
+  if (accent) {
+    color = accent;
+    iconBg = accent + '18';
+    iconColor = accent;
+  } else if (positive === true) {
+    color = '#059669';
+    iconBg = '#ECFDF5';
+    iconColor = '#059669';
+  } else if (positive === false) {
+    color = '#DC2626';
+    iconBg = '#FEF2F2';
+    iconColor = '#DC2626';
+  }
 
   useEffect(() => {
     if (!ref.current || value === null) return;
     const ctx = gsap.context(() => {
-      gsap.from(ref.current, { y: 16, opacity: 0, duration: 0.5, delay, ease: 'power3.out' });
+      gsap.from(ref.current, { y: 12, opacity: 0, duration: 0.45, delay, ease: 'power3.out' });
       gsap.from({ val: 0 }, {
-        val: value, duration: 1.0, delay: delay + 0.1, ease: 'power2.out',
+        val: value, duration: 0.9, delay: delay + 0.08, ease: 'power2.out',
         onUpdate() {
           if (numRef.current) numRef.current.textContent = fmt(this.targets()[0].val, format);
         }
@@ -50,22 +58,31 @@ export default function KpiCard({ label, value, format = 'currency', positive, s
 
   return (
     <div ref={ref} style={{
-      background: 'var(--surface)',
-      border: `1px solid ${borderColor}`,
-      borderRadius: '16px',
+      background: bg,
+      border: '1px solid rgba(15,23,42,0.07)',
+      borderRadius: '14px',
       padding: '20px 22px',
+      boxShadow: '0 1px 4px rgba(0,0,0,0.05), 0 0 0 1px rgba(0,0,0,0.02)',
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-        <span style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--muted)' }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '14px' }}>
+        <span style={{ fontSize: '12px', fontWeight: 600, color: '#64748B', letterSpacing: '0.03em' }}>
           {label}
         </span>
-        {icon && <span style={{ color: 'var(--muted)', opacity: 0.7 }}>{icon}</span>}
+        {icon && (
+          <div style={{
+            width: '28px', height: '28px', borderRadius: '8px',
+            background: iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: iconColor, flexShrink: 0,
+          }}>
+            {icon}
+          </div>
+        )}
       </div>
-      <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: '22px', color, fontVariantNumeric: 'tabular-nums' }}>
+      <div style={{ fontSize: '26px', fontWeight: 700, color, fontVariantNumeric: 'tabular-nums', lineHeight: 1, letterSpacing: '-0.01em' }}>
         <span ref={numRef}>{value !== null ? fmt(value, format) : '—'}</span>
       </div>
       {subtitle && (
-        <p style={{ marginTop: '6px', fontSize: '12px', color: 'var(--muted)' }}>{subtitle}</p>
+        <p style={{ marginTop: '8px', fontSize: '12px', color: '#94A3B8' }}>{subtitle}</p>
       )}
     </div>
   );
