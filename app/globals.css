@@ -145,6 +145,11 @@ input::placeholder { color: var(--muted2); }
 
   /* Page headers */
   .page-header { flex-wrap: wrap !important; gap: 12px !important; }
+  .page-header .btn-primary { flex-shrink: 0; }
+
+  /* Barre de filtres */
+  .filter-bar { flex-wrap: wrap !important; }
+  .filter-bar select { flex: 1 1 140px !important; }
 
   /* Tables */
   .data-table { min-width: 520px; }

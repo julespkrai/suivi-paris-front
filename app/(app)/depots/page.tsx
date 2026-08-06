@@ -69,7 +69,7 @@ export default function DepotsPage() {
   return (
     <div>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '28px' }}>
+      <div className="page-header" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '28px' }}>
         <div>
           <h1 style={{ fontSize: '26px', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em', marginBottom: '6px' }}>
             Dépôts & Retraits
@@ -156,6 +156,7 @@ export default function DepotsPage() {
             <p style={{ fontSize: '13px', color: '#94A3B8' }}>Aucun mouvement enregistré</p>
           </div>
         ) : (
+          <div style={{ overflowX: 'auto' }}>
           <table className="data-table" style={{ width: '100%' }}>
             <thead><tr>
               <th>Date</th><th>Canal</th>
@@ -200,6 +201,7 @@ export default function DepotsPage() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </div>
 

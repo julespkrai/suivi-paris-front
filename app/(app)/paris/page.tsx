@@ -129,7 +129,7 @@ export default function ParisPage() {
   return (
     <div>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '28px' }}>
+      <div className="page-header" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '28px' }}>
         <div>
           <h1 style={{ fontSize: '26px', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em', marginBottom: '6px' }}>
             Paris Quotidien
@@ -147,7 +147,7 @@ export default function ParisPage() {
       </div>
 
       {/* Filtres */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+      <div className="filter-bar" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
         <Filter size={14} style={{ color: '#94A3B8', flexShrink: 0 }} />
         <select value={filterStatut} onChange={e => setFilterStatut(e.target.value)} style={selectStyle}>
           <option value="">Tous statuts</option>
