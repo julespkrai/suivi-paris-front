@@ -44,13 +44,17 @@ export default function KpiCard({ label, value, format = 'currency', positive, s
 
   useEffect(() => {
     if (!ref.current || value === null) return;
+    const counter = { val: 0 };
     const ctx = gsap.context(() => {
       gsap.from(ref.current, { y: 12, opacity: 0, duration: 0.45, delay, ease: 'power3.out' });
-      gsap.from({ val: 0 }, {
+      gsap.to(counter, {
         val: value, duration: 0.9, delay: delay + 0.08, ease: 'power2.out',
         onUpdate() {
-          if (numRef.current) numRef.current.textContent = fmt(this.targets()[0].val, format);
-        }
+          if (numRef.current) numRef.current.textContent = fmt(counter.val, format);
+        },
+        onComplete() {
+          if (numRef.current) numRef.current.textContent = fmt(value, format);
+        },
       });
     });
     return () => ctx.revert();
