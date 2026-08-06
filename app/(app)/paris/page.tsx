@@ -47,7 +47,7 @@ export default function ParisPage() {
   const undoRef = useRef<DeletedPari | null>(null);
 
   const load = useCallback(() => {
-    api.get<Pari[]>('/paris').then(setParis).catch(console.error).finally(() => setLoading(false));
+    api.get<Pari[]>('/paris').then(setParis).catch(() => {}).finally(() => setLoading(false));
   }, []);
 
   useEffect(() => { load(); }, [load]);
@@ -83,7 +83,7 @@ export default function ParisPage() {
       if (editPari) await api.put(`/paris/${editPari.id}`, body);
       else await api.post('/paris', body);
       load(); setShowModal(false);
-    } catch (err) { console.error(err); }
+    } catch { setSaving(false); return; }
     finally { setSaving(false); }
   };
 

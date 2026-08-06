@@ -33,7 +33,7 @@ export default function CombisPage() {
   const [saving, setSaving] = useState(false);
 
   const load = useCallback(() => {
-    api.get<Combi[]>('/combis').then(setCombis).catch(console.error).finally(() => setLoading(false));
+    api.get<Combi[]>('/combis').then(setCombis).catch(() => {}).finally(() => setLoading(false));
   }, []);
 
   useEffect(() => { load(); }, [load]);
@@ -70,7 +70,7 @@ export default function CombisPage() {
         });
       }
       load(); setShowCombiModal(false); setCombiForm(emptyCombi());
-    } catch (err) { console.error(err); }
+    } catch { setSaving(false); return; }
     finally { setSaving(false); }
   };
 
@@ -81,7 +81,7 @@ export default function CombisPage() {
         ...legForm, cote: parseFloat(legForm.cote), sport: legForm.sport || null, comp: legForm.comp || null,
       });
       load(); setShowLegModal(null); setLegForm(emptyLeg());
-    } catch (err) { console.error(err); }
+    } catch { setSaving(false); return; }
     finally { setSaving(false); }
   };
 

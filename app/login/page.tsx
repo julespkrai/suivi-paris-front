@@ -26,7 +26,7 @@ export default function LoginPage() {
       else await register(email, password, pseudo || undefined);
       router.push('/dashboard');
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Une erreur est survenue');
+      setError('Email ou mot de passe incorrect.');
     } finally {
       setLoading(false);
     }
@@ -50,12 +50,10 @@ export default function LoginPage() {
         display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
         padding: '48px', position: 'relative', overflow: 'hidden',
       }}>
-        {/* Cercles décoratifs */}
         <div style={{ position: 'absolute', top: '-80px', right: '-80px', width: '300px', height: '300px', borderRadius: '50%', background: 'rgba(255,255,255,0.06)' }} />
         <div style={{ position: 'absolute', bottom: '-100px', left: '-60px', width: '350px', height: '350px', borderRadius: '50%', background: 'rgba(255,255,255,0.04)' }} />
         <div style={{ position: 'absolute', top: '40%', right: '10%', width: '150px', height: '150px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)' }} />
 
-        {/* Logo */}
         <div style={{ position: 'relative', zIndex: 1 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{
@@ -70,7 +68,6 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Texte central */}
         <div style={{ position: 'relative', zIndex: 1 }}>
           <h2 style={{ fontSize: '32px', fontWeight: 800, color: 'white', lineHeight: 1.2, marginBottom: '16px', letterSpacing: '-0.02em' }}>
             Suivez vos paris<br />comme un pro.
@@ -80,7 +77,6 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Stats déco */}
         <div style={{ position: 'relative', zIndex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
           {[
             { label: 'Paris suivis', value: '100%' },
@@ -97,7 +93,6 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Panneau droit — formulaire */}
       <div style={{
         flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: '40px',

@@ -27,7 +27,7 @@ export default function DepotsPage() {
   const [saving, setSaving] = useState(false);
 
   const load = useCallback(() => {
-    api.get<Depot[]>('/depots').then(setDepots).catch(console.error).finally(() => setLoading(false));
+    api.get<Depot[]>('/depots').then(setDepots).catch(() => {}).finally(() => setLoading(false));
   }, []);
 
   useEffect(() => { load(); }, [load]);
@@ -48,7 +48,7 @@ export default function DepotsPage() {
         date: form.date,
       });
       load(); setShowModal(false); setForm(emptyForm());
-    } catch (err) { console.error(err); }
+    } catch { setSaving(false); return; }
     finally { setSaving(false); }
   };
 

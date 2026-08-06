@@ -28,7 +28,7 @@ export default function LotoPage() {
   const [saving, setSaving] = useState(false);
 
   const load = useCallback(() => {
-    api.get<LotoFoot[]>('/loto').then(setLoto).catch(console.error).finally(() => setLoading(false));
+    api.get<LotoFoot[]>('/loto').then(setLoto).catch(() => {}).finally(() => setLoading(false));
   }, []);
 
   useEffect(() => { load(); }, [load]);
@@ -54,7 +54,7 @@ export default function LotoPage() {
       if (editItem) await api.put(`/loto/${editItem.id}`, body);
       else await api.post('/loto', body);
       load(); setShowModal(false);
-    } catch (err) { console.error(err); }
+    } catch { setSaving(false); return; }
     finally { setSaving(false); }
   };
 
