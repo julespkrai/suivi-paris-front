@@ -6,8 +6,8 @@ import { TrendingUp, BarChart3, Wallet, Layers, Trophy, LogOut, ChevronRight } f
 
 const nav = [
   { href: '/dashboard', label: 'Dashboard', icon: BarChart3 },
-  { href: '/paris', label: 'Paris', icon: TrendingUp },
-  { href: '/combis', label: 'Combinés', icon: Layers },
+  { href: '/paris', label: 'Paris Quotidien', icon: TrendingUp },
+  { href: '/combis', label: 'Paris Longs Termes', icon: Layers },
   { href: '/depots', label: 'Dépôts', icon: Wallet },
   { href: '/loto', label: 'Loto Foot', icon: Trophy },
 ];

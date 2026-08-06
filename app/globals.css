@@ -75,6 +75,7 @@ input::placeholder { color: var(--muted2); }
 .badge-perdu    { background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; }
 .badge-rembourse{ background: #FFFBEB; color: #D97706; border: 1px solid #FDE68A; }
 .badge-annule   { background: #F8FAFC; color: #64748B; border: 1px solid #E2E8F0; }
+.badge-cashout  { background: #FFF7ED; color: #C2410C; border: 1px solid #FED7AA; }
 
 /* Table */
 .data-table { width: 100%; border-collapse: collapse; }

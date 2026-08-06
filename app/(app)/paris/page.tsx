@@ -1,12 +1,12 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { api, Pari } from '@/lib/api';
 import Modal from '@/components/Modal';
 import StatusBadge from '@/components/StatusBadge';
-import { Plus, Trash2, Edit2, TrendingUp, Filter } from 'lucide-react';
+import { Plus, Trash2, Edit2, TrendingUp, Filter, RotateCcw } from 'lucide-react';
 
 const CANAUX = ['Winamax', 'Betclic', 'Tabac'];
-const STATUTS = ['En cours', 'Gagné', 'Perdu', 'Remboursé', 'Annulé'];
+const STATUTS = ['En cours', 'Gagné', 'Perdu', 'Cash Out', 'Remboursé', 'Annulé'];
 const SPORTS = ['Football', 'Tennis', 'Basketball', 'Rugby', 'Hockey', 'Cyclisme', 'F1', 'Autre'];
 
 const fmtEur = (v: number) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(v);
@@ -32,6 +32,8 @@ const btnOutline: React.CSSProperties = {
   cursor: 'pointer', fontFamily: 'Inter, sans-serif',
 };
 
+interface DeletedPari { pari: Pari; timer: ReturnType<typeof setTimeout> }
+
 export default function ParisPage() {
   const [paris, setParis] = useState<Pari[]>([]);
   const [loading, setLoading] = useState(true);
@@ -41,12 +43,15 @@ export default function ParisPage() {
   const [saving, setSaving] = useState(false);
   const [filterStatut, setFilterStatut] = useState('');
   const [filterCanal, setFilterCanal] = useState('');
+  const [undoItem, setUndoItem] = useState<DeletedPari | null>(null);
+  const undoRef = useRef<DeletedPari | null>(null);
 
   const load = useCallback(() => {
     api.get<Pari[]>('/paris').then(setParis).catch(console.error).finally(() => setLoading(false));
   }, []);
 
   useEffect(() => { load(); }, [load]);
+  useEffect(() => () => { if (undoRef.current) clearTimeout(undoRef.current.timer); }, []);
 
   const openCreate = () => { setEditPari(null); setForm(emptyForm()); setShowModal(true); };
   const openEdit = (p: Pari) => {
@@ -82,9 +87,28 @@ export default function ParisPage() {
     finally { setSaving(false); }
   };
 
-  const handleDelete = async (id: number) => {
-    if (!confirm('Supprimer ce pari ?')) return;
-    await api.delete(`/paris/${id}`); load();
+  const handleDelete = async (pari: Pari) => {
+    if (undoRef.current) {
+      clearTimeout(undoRef.current.timer);
+      await api.delete(`/paris/${undoRef.current.pari.id}`);
+    }
+    setParis(prev => prev.filter(p => p.id !== pari.id));
+    const timer = setTimeout(async () => {
+      await api.delete(`/paris/${pari.id}`);
+      undoRef.current = null;
+      setUndoItem(null);
+    }, 6000);
+    const item = { pari, timer };
+    undoRef.current = item;
+    setUndoItem(item);
+  };
+
+  const handleUndo = () => {
+    if (!undoRef.current) return;
+    clearTimeout(undoRef.current.timer);
+    setParis(prev => [...prev, undoRef.current!.pari].sort((a, b) => b.id - a.id));
+    undoRef.current = null;
+    setUndoItem(null);
   };
 
   const filtered = paris.filter(p => {
@@ -98,13 +122,17 @@ export default function ParisPage() {
 
   const setF = (key: keyof FormData, val: string) => setForm(f => ({ ...f, [key]: val }));
 
+  const showRetour = ['Gagné', 'Remboursé', 'Perdu', 'Cash Out'].includes(form.statut);
+  const retourLabel = form.statut === 'Cash Out' ? 'Montant cash out (€)' : 'Retour saisi (€)';
+  const retourPlaceholder = form.statut === 'Cash Out' ? 'Ex: 8.50' : 'Laisser vide = calcul auto';
+
   return (
     <div>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '28px' }}>
         <div>
           <h1 style={{ fontSize: '26px', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em', marginBottom: '6px' }}>
-            Paris simples
+            Paris Quotidien
           </h1>
           <p style={{ fontSize: '13.5px', color: '#64748B' }}>
             {paris.length} paris &middot; {enCours} en cours &middot; P/L&nbsp;
@@ -191,7 +219,7 @@ export default function ParisPage() {
                           onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#94A3B8'; }}>
                           <Edit2 size={13} />
                         </button>
-                        <button onClick={() => handleDelete(p.id)} style={{
+                        <button onClick={() => handleDelete(p)} style={{
                           padding: '6px', borderRadius: '7px', border: 'none',
                           background: 'transparent', cursor: 'pointer', color: '#94A3B8',
                           display: 'flex', alignItems: 'center', transition: 'all 0.12s',
@@ -209,6 +237,30 @@ export default function ParisPage() {
           </div>
         )}
       </div>
+
+      {/* Toast undo */}
+      {undoItem && (
+        <div style={{
+          position: 'fixed', bottom: '28px', left: '50%', transform: 'translateX(-50%)',
+          display: 'flex', alignItems: 'center', gap: '14px',
+          background: '#0F172A', color: 'white',
+          padding: '12px 20px', borderRadius: '12px',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
+          fontSize: '13.5px', fontWeight: 500, zIndex: 100,
+          animation: 'slideUp 0.25s ease',
+        }}>
+        <style>{`@keyframes slideUp { from { opacity:0; transform:translateX(-50%) translateY(10px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }`}</style>
+          Pari supprimé
+          <button onClick={handleUndo} style={{
+            display: 'flex', alignItems: 'center', gap: '6px',
+            padding: '6px 12px', borderRadius: '8px',
+            background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.2)',
+            color: 'white', fontSize: '12.5px', fontWeight: 600, cursor: 'pointer',
+          }}>
+            <RotateCcw size={12} /> Annuler
+          </button>
+        </div>
+      )}
 
       {/* Modal */}
       <Modal title={editPari ? 'Modifier le pari' : 'Nouveau pari'} open={showModal} onClose={() => setShowModal(false)}>
@@ -260,20 +312,35 @@ export default function ParisPage() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: showRetour ? '1fr 1fr' : '1fr', gap: '12px' }}>
             <div>
               <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748B', marginBottom: '6px' }}>Statut</label>
               <select value={form.statut} onChange={e => setF('statut', e.target.value)} style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', fontSize: '13.5px' }}>
                 {STATUTS.map(s => <option key={s}>{s}</option>)}
               </select>
             </div>
-            {(form.statut === 'Gagné' || form.statut === 'Remboursé' || form.statut === 'Perdu') && (
+            {showRetour && (
               <div>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748B', marginBottom: '6px' }}>Retour saisi (€)</label>
-                <input type="number" step="0.01" value={form.retourSaisi} onChange={e => setF('retourSaisi', e.target.value)} placeholder="Laisser vide = calcul auto" style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', fontSize: '13.5px' }} />
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: form.statut === 'Cash Out' ? '#C2410C' : '#64748B', marginBottom: '6px' }}>
+                  {retourLabel}
+                </label>
+                <input type="number" step="0.01" value={form.retourSaisi} onChange={e => setF('retourSaisi', e.target.value)}
+                  placeholder={retourPlaceholder}
+                  required={form.statut === 'Cash Out'}
+                  style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', fontSize: '13.5px' }} />
               </div>
             )}
           </div>
+
+          {form.statut === 'Cash Out' && (
+            <div style={{
+              padding: '10px 14px', borderRadius: '10px',
+              background: '#FFF7ED', border: '1px solid #FED7AA',
+              fontSize: '12.5px', color: '#92400E',
+            }}>
+              Le P/L sera calculé automatiquement : montant cash out − mise.
+            </div>
+          )}
 
           <div style={{ display: 'flex', gap: '12px', paddingTop: '4px' }}>
             <button type="button" onClick={() => setShowModal(false)} style={{
