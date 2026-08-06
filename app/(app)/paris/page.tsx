@@ -12,8 +12,25 @@ const SPORTS = ['Football', 'Tennis', 'Basketball', 'Rugby', 'Hockey', 'Cyclisme
 const fmtEur = (v: number) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(v);
 const fmtDate = (d: string) => new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' });
 
+const CANAL_COLOR: Record<string, string> = { Winamax: '#EA580C', Betclic: '#2563EB', Tabac: '#D97706' };
+const CANAL_BG: Record<string, string> = { Winamax: '#FFF7ED', Betclic: '#EFF6FF', Tabac: '#FFFBEB' };
+
 type FormData = { canal: string; sport: string; competition: string; type: string; description: string; coteBase: string; cote: string; mise: string; statut: string; retourSaisi: string; date: string };
 const emptyForm = (): FormData => ({ canal: 'Winamax', sport: '', competition: '', type: '', description: '', coteBase: '', cote: '', mise: '', statut: 'En cours', retourSaisi: '', date: new Date().toISOString().split('T')[0] });
+
+const selectStyle: React.CSSProperties = {
+  padding: '10px 14px', borderRadius: '10px', fontSize: '13px',
+  background: 'white', border: '1.5px solid rgba(15,23,42,0.14)',
+  color: '#475569', cursor: 'pointer', fontFamily: 'Inter, sans-serif',
+};
+
+const btnOutline: React.CSSProperties = {
+  display: 'flex', alignItems: 'center', gap: '6px',
+  padding: '8px 14px', borderRadius: '10px',
+  background: 'white', border: '1.5px solid rgba(15,23,42,0.12)',
+  fontSize: '12.5px', fontWeight: 500, color: '#64748B',
+  cursor: 'pointer', fontFamily: 'Inter, sans-serif',
+};
 
 export default function ParisPage() {
   const [paris, setParis] = useState<Pari[]>([]);
@@ -84,92 +101,103 @@ export default function ParisPage() {
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '28px' }}>
         <div>
-          <h1 className="font-display text-3xl font-bold text-white">Paris simples</h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--muted)' }}>
-            {paris.length} paris — {enCours} en cours — P/L:&nbsp;
-            <span style={{ color: totalPL >= 0 ? 'var(--green)' : 'var(--red)', fontWeight: 600 }}>
-              {fmtEur(totalPL)}
+          <h1 style={{ fontSize: '26px', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em', marginBottom: '6px' }}>
+            Paris simples
+          </h1>
+          <p style={{ fontSize: '13.5px', color: '#64748B' }}>
+            {paris.length} paris &middot; {enCours} en cours &middot; P/L&nbsp;
+            <span style={{ color: totalPL >= 0 ? '#059669' : '#DC2626', fontWeight: 700 }}>
+              {totalPL >= 0 ? '+' : ''}{fmtEur(totalPL)}
             </span>
           </p>
         </div>
-        <button onClick={openCreate} className="btn-primary flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm">
-          <Plus size={16} /> Nouveau pari
+        <button onClick={openCreate} className="btn-primary">
+          <Plus size={15} /> Nouveau pari
         </button>
       </div>
 
       {/* Filtres */}
-      <div className="flex items-center gap-3 mb-4">
-        <Filter size={14} style={{ color: 'var(--muted)' }} />
-        <select value={filterStatut} onChange={e => setFilterStatut(e.target.value)}
-          className="px-3 py-2 rounded-xl text-sm" style={{ border: '1px solid var(--border2)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+        <Filter size={14} style={{ color: '#94A3B8', flexShrink: 0 }} />
+        <select value={filterStatut} onChange={e => setFilterStatut(e.target.value)} style={selectStyle}>
           <option value="">Tous statuts</option>
           {STATUTS.map(s => <option key={s}>{s}</option>)}
         </select>
-        <select value={filterCanal} onChange={e => setFilterCanal(e.target.value)}
-          className="px-3 py-2 rounded-xl text-sm" style={{ border: '1px solid var(--border2)' }}>
+        <select value={filterCanal} onChange={e => setFilterCanal(e.target.value)} style={selectStyle}>
           <option value="">Tous canaux</option>
           {CANAUX.map(c => <option key={c}>{c}</option>)}
         </select>
         {(filterStatut || filterCanal) && (
-          <button onClick={() => { setFilterStatut(''); setFilterCanal(''); }}
-            className="text-xs px-3 py-2 rounded-xl" style={{ color: 'var(--muted)', border: '1px solid var(--border)' }}>
+          <button onClick={() => { setFilterStatut(''); setFilterCanal(''); }} style={btnOutline}>
             Réinitialiser
           </button>
         )}
       </div>
 
       {/* Table */}
-      <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid var(--border)', background: 'var(--surface)' }}>
+      <div style={{ borderRadius: '14px', overflow: 'hidden', border: '1px solid rgba(15,23,42,0.08)', background: 'white', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
         {loading ? (
-          <div className="p-12 text-center text-sm" style={{ color: 'var(--muted)' }}>Chargement…</div>
+          <div style={{ padding: '48px', textAlign: 'center', fontSize: '13px', color: '#94A3B8' }}>Chargement…</div>
         ) : filtered.length === 0 ? (
-          <div className="p-12 text-center">
-            <TrendingUp size={32} className="mx-auto mb-3" style={{ color: 'var(--border2)' }} />
-            <p className="text-sm" style={{ color: 'var(--muted)' }}>Aucun pari trouvé</p>
+          <div style={{ padding: '48px', textAlign: 'center' }}>
+            <TrendingUp size={32} style={{ color: '#CBD5E1', margin: '0 auto 12px', display: 'block' }} />
+            <p style={{ fontSize: '13px', color: '#94A3B8' }}>Aucun pari trouvé</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="data-table w-full">
+          <div style={{ overflowX: 'auto' }}>
+            <table className="data-table" style={{ width: '100%' }}>
               <thead><tr>
                 <th>Date</th><th>Canal</th><th>Sport</th><th>Description</th>
-                <th className="text-right">Cote</th><th className="text-right">Mise</th>
-                <th>Statut</th><th className="text-right">P/L</th><th></th>
+                <th style={{ textAlign: 'right' }}>Cote</th><th style={{ textAlign: 'right' }}>Mise</th>
+                <th>Statut</th><th style={{ textAlign: 'right' }}>P/L</th><th></th>
               </tr></thead>
               <tbody>
                 {filtered.map(p => (
                   <tr key={p.id}>
-                    <td className="text-xs" style={{ color: 'var(--muted)' }}>{fmtDate(p.date)}</td>
+                    <td style={{ fontSize: '12.5px', color: '#94A3B8' }}>{fmtDate(p.date)}</td>
                     <td>
-                      <span className="text-xs font-semibold px-2 py-0.5 rounded-md"
-                        style={{ background: 'var(--surface2)', color: p.canal === 'Winamax' ? '#FF5100' : p.canal === 'Betclic' ? '#00A6FF' : '#FFB800' }}>
+                      <span style={{
+                        fontSize: '11px', fontWeight: 600, padding: '2px 8px', borderRadius: '6px',
+                        background: CANAL_BG[p.canal] || '#F8FAFC',
+                        color: CANAL_COLOR[p.canal] || '#475569',
+                      }}>
                         {p.canal}
                       </span>
                     </td>
-                    <td className="text-sm" style={{ color: 'var(--muted)' }}>{p.sport || '—'}</td>
-                    <td className="text-sm max-w-xs truncate">{p.description || p.type || '—'}</td>
-                    <td className="text-right text-sm font-semibold">{p.cote}x</td>
-                    <td className="text-right text-sm" style={{ fontVariantNumeric: 'tabular-nums' }}>{fmtEur(p.mise)}</td>
+                    <td style={{ fontSize: '13px', color: '#64748B' }}>{p.sport || '—'}</td>
+                    <td style={{ fontSize: '13px', color: '#1E293B', maxWidth: '260px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {p.description || p.type || '—'}
+                    </td>
+                    <td style={{ textAlign: 'right', fontSize: '13px', fontWeight: 600, color: '#0F172A' }}>{p.cote}x</td>
+                    <td style={{ textAlign: 'right', fontSize: '13px', fontVariantNumeric: 'tabular-nums', color: '#1E293B' }}>{fmtEur(p.mise)}</td>
                     <td><StatusBadge statut={p.statut} /></td>
-                    <td className="text-right text-sm font-bold" style={{
-                      color: p.statut === 'En cours' ? 'var(--muted)' : p.pl >= 0 ? 'var(--green)' : 'var(--red)',
-                      fontVariantNumeric: 'tabular-nums'
+                    <td style={{
+                      textAlign: 'right', fontSize: '13px', fontWeight: 700,
+                      color: p.statut === 'En cours' ? '#94A3B8' : p.pl >= 0 ? '#059669' : '#DC2626',
+                      fontVariantNumeric: 'tabular-nums',
                     }}>
                       {p.statut === 'En cours' ? '—' : (p.pl >= 0 ? '+' : '') + fmtEur(p.pl)}
                     </td>
                     <td>
-                      <div className="flex items-center gap-1 justify-end">
-                        <button onClick={() => openEdit(p)} className="p-1.5 rounded-lg transition-colors"
-                          style={{ color: 'var(--muted)' }}
-                          onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface2)'; e.currentTarget.style.color = 'var(--text)'; }}
-                          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--muted)'; }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'flex-end' }}>
+                        <button onClick={() => openEdit(p)} style={{
+                          padding: '6px', borderRadius: '7px', border: 'none',
+                          background: 'transparent', cursor: 'pointer', color: '#94A3B8',
+                          display: 'flex', alignItems: 'center', transition: 'all 0.12s',
+                        }}
+                          onMouseEnter={e => { e.currentTarget.style.background = '#F1F5F9'; e.currentTarget.style.color = '#475569'; }}
+                          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#94A3B8'; }}>
                           <Edit2 size={13} />
                         </button>
-                        <button onClick={() => handleDelete(p.id)} className="p-1.5 rounded-lg transition-colors"
-                          style={{ color: 'var(--muted)' }}
-                          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,61,113,0.1)'; e.currentTarget.style.color = 'var(--red)'; }}
-                          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--muted)'; }}>
+                        <button onClick={() => handleDelete(p.id)} style={{
+                          padding: '6px', borderRadius: '7px', border: 'none',
+                          background: 'transparent', cursor: 'pointer', color: '#94A3B8',
+                          display: 'flex', alignItems: 'center', transition: 'all 0.12s',
+                        }}
+                          onMouseEnter={e => { e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.color = '#DC2626'; }}
+                          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#94A3B8'; }}>
                           <Trash2 size={13} />
                         </button>
                       </div>
@@ -184,87 +212,77 @@ export default function ParisPage() {
 
       {/* Modal */}
       <Modal title={editPari ? 'Modifier le pari' : 'Nouveau pari'} open={showModal} onClose={() => setShowModal(false)}>
-        <form onSubmit={handleSave} className="flex flex-col gap-4">
-          <div className="grid grid-cols-2 gap-3">
+        <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--muted)' }}>Canal *</label>
-              <select value={form.canal} onChange={e => setF('canal', e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl text-sm">
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748B', marginBottom: '6px' }}>Canal *</label>
+              <select value={form.canal} onChange={e => setF('canal', e.target.value)} style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', fontSize: '13.5px' }}>
                 {CANAUX.map(c => <option key={c}>{c}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--muted)' }}>Date *</label>
-              <input type="date" value={form.date} onChange={e => setF('date', e.target.value)} required
-                className="w-full px-3 py-2.5 rounded-xl text-sm" />
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748B', marginBottom: '6px' }}>Date *</label>
+              <input type="date" value={form.date} onChange={e => setF('date', e.target.value)} required style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', fontSize: '13.5px' }} />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--muted)' }}>Sport</label>
-              <select value={form.sport} onChange={e => setF('sport', e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl text-sm">
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748B', marginBottom: '6px' }}>Sport</label>
+              <select value={form.sport} onChange={e => setF('sport', e.target.value)} style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', fontSize: '13.5px' }}>
                 <option value="">— Sélectionner —</option>
                 {SPORTS.map(s => <option key={s}>{s}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--muted)' }}>Compétition</label>
-              <input value={form.competition} onChange={e => setF('competition', e.target.value)}
-                placeholder="Ligue 1, Roland Garros…" className="w-full px-3 py-2.5 rounded-xl text-sm" />
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748B', marginBottom: '6px' }}>Compétition</label>
+              <input value={form.competition} onChange={e => setF('competition', e.target.value)} placeholder="Ligue 1, Roland Garros…" style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', fontSize: '13.5px' }} />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--muted)' }}>Description / sélection</label>
-            <input value={form.description} onChange={e => setF('description', e.target.value)}
-              placeholder="PSG Victoire, Nadal 1er set…" className="w-full px-3 py-2.5 rounded-xl text-sm" />
+            <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748B', marginBottom: '6px' }}>Description / sélection</label>
+            <input value={form.description} onChange={e => setF('description', e.target.value)} placeholder="PSG Victoire, Nadal 1er set…" style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', fontSize: '13.5px' }} />
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--muted)' }}>Cote base</label>
-              <input type="number" step="0.01" value={form.coteBase} onChange={e => setF('coteBase', e.target.value)}
-                placeholder="1.50" className="w-full px-3 py-2.5 rounded-xl text-sm" />
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748B', marginBottom: '6px' }}>Cote base</label>
+              <input type="number" step="0.01" value={form.coteBase} onChange={e => setF('coteBase', e.target.value)} placeholder="1.50" style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', fontSize: '13.5px' }} />
             </div>
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--muted)' }}>Cote finale *</label>
-              <input type="number" step="0.01" value={form.cote} onChange={e => setF('cote', e.target.value)}
-                placeholder="1.85" required className="w-full px-3 py-2.5 rounded-xl text-sm" />
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748B', marginBottom: '6px' }}>Cote finale *</label>
+              <input type="number" step="0.01" value={form.cote} onChange={e => setF('cote', e.target.value)} placeholder="1.85" required style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', fontSize: '13.5px' }} />
             </div>
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--muted)' }}>Mise (€) *</label>
-              <input type="number" step="0.01" value={form.mise} onChange={e => setF('mise', e.target.value)}
-                placeholder="10.00" required className="w-full px-3 py-2.5 rounded-xl text-sm" />
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748B', marginBottom: '6px' }}>Mise (€) *</label>
+              <input type="number" step="0.01" value={form.mise} onChange={e => setF('mise', e.target.value)} placeholder="10.00" required style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', fontSize: '13.5px' }} />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--muted)' }}>Statut</label>
-              <select value={form.statut} onChange={e => setF('statut', e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl text-sm">
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748B', marginBottom: '6px' }}>Statut</label>
+              <select value={form.statut} onChange={e => setF('statut', e.target.value)} style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', fontSize: '13.5px' }}>
                 {STATUTS.map(s => <option key={s}>{s}</option>)}
               </select>
             </div>
             {(form.statut === 'Gagné' || form.statut === 'Remboursé' || form.statut === 'Perdu') && (
               <div>
-                <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--muted)' }}>Retour saisi (€)</label>
-                <input type="number" step="0.01" value={form.retourSaisi} onChange={e => setF('retourSaisi', e.target.value)}
-                  placeholder="Laisser vide = calcul auto" className="w-full px-3 py-2.5 rounded-xl text-sm" />
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748B', marginBottom: '6px' }}>Retour saisi (€)</label>
+                <input type="number" step="0.01" value={form.retourSaisi} onChange={e => setF('retourSaisi', e.target.value)} placeholder="Laisser vide = calcul auto" style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', fontSize: '13.5px' }} />
               </div>
             )}
           </div>
 
-          <div className="flex gap-3 pt-2">
-            <button type="button" onClick={() => setShowModal(false)}
-              className="flex-1 py-2.5 rounded-xl text-sm font-medium"
-              style={{ background: 'var(--surface2)', color: 'var(--muted)', border: '1px solid var(--border)' }}>
+          <div style={{ display: 'flex', gap: '12px', paddingTop: '4px' }}>
+            <button type="button" onClick={() => setShowModal(false)} style={{
+              flex: 1, padding: '11px', borderRadius: '10px', border: '1.5px solid rgba(15,23,42,0.12)',
+              background: '#F8FAFC', color: '#64748B', fontSize: '13.5px', fontWeight: 600, cursor: 'pointer',
+            }}>
               Annuler
             </button>
-            <button type="submit" disabled={saving}
-              className="flex-1 btn-primary py-2.5 rounded-xl text-sm disabled:opacity-50">
+            <button type="submit" disabled={saving} className="btn-primary" style={{ flex: 1, justifyContent: 'center' }}>
               {saving ? 'Sauvegarde…' : editPari ? 'Modifier' : 'Ajouter'}
             </button>
           </div>

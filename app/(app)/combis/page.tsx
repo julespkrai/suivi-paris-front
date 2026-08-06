@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
-import { api, Combi, CombiLeg } from '@/lib/api';
+import { api, Combi } from '@/lib/api';
 import Modal from '@/components/Modal';
 import StatusBadge from '@/components/StatusBadge';
 import { Plus, Trash2, ChevronDown, ChevronRight, Layers } from 'lucide-react';
@@ -24,7 +24,6 @@ export default function CombisPage() {
   const [combiForm, setCombiForm] = useState<CombiForm>(emptyCombi());
   const [legForm, setLegForm] = useState<LegForm>(emptyLeg());
   const [saving, setSaving] = useState(false);
-  const [editLeg, setEditLeg] = useState<{ combiId: number; legId: number; statut: string } | null>(null);
 
   const load = useCallback(() => {
     api.get<Combi[]>('/combis').then(setCombis).catch(console.error).finally(() => setLoading(false));
@@ -72,64 +71,90 @@ export default function CombisPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '28px' }}>
         <div>
-          <h1 className="font-display text-3xl font-bold text-white">Combinés</h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--muted)' }}>
-            {combis.length} combinés — P/L:&nbsp;
-            <span style={{ color: totalPL >= 0 ? 'var(--green)' : 'var(--red)', fontWeight: 600 }}>
+          <h1 style={{ fontSize: '26px', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em', marginBottom: '6px' }}>
+            Combinés
+          </h1>
+          <p style={{ fontSize: '13.5px', color: '#64748B' }}>
+            {combis.length} combinés &middot; P/L&nbsp;
+            <span style={{ color: totalPL >= 0 ? '#059669' : '#DC2626', fontWeight: 700 }}>
               {totalPL >= 0 ? '+' : ''}{fmtEur(totalPL)}
             </span>
           </p>
         </div>
-        <button onClick={() => { setShowCombiModal(true); setCombiForm(emptyCombi()); }}
-          className="btn-primary flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm">
-          <Plus size={16} /> Nouveau combiné
+        <button onClick={() => { setShowCombiModal(true); setCombiForm(emptyCombi()); }} className="btn-primary">
+          <Plus size={15} /> Nouveau combiné
         </button>
       </div>
 
       {loading ? (
-        <div className="p-12 text-center text-sm" style={{ color: 'var(--muted)' }}>Chargement…</div>
+        <div style={{ padding: '48px', textAlign: 'center', fontSize: '13px', color: '#94A3B8' }}>Chargement…</div>
       ) : combis.length === 0 ? (
-        <div className="p-12 text-center rounded-2xl" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
-          <Layers size={32} className="mx-auto mb-3" style={{ color: 'var(--border2)' }} />
-          <p className="text-sm" style={{ color: 'var(--muted)' }}>Aucun combiné enregistré</p>
+        <div style={{
+          padding: '48px', textAlign: 'center', borderRadius: '14px',
+          background: 'white', border: '1px solid rgba(15,23,42,0.08)',
+          boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
+        }}>
+          <Layers size={32} style={{ color: '#CBD5E1', margin: '0 auto 12px', display: 'block' }} />
+          <p style={{ fontSize: '13px', color: '#94A3B8' }}>Aucun combiné enregistré</p>
         </div>
       ) : (
-        <div className="flex flex-col gap-3">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {combis.map(c => (
-            <div key={c.id} className="rounded-2xl overflow-hidden" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
+            <div key={c.id} style={{
+              borderRadius: '14px', overflow: 'hidden',
+              background: 'white', border: '1px solid rgba(15,23,42,0.08)',
+              boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
+            }}>
               {/* Header combiné */}
-              <div className="flex items-center gap-3 px-5 py-4 cursor-pointer"
+              <div
                 onClick={() => toggleExpand(c.id)}
-                style={{ borderBottom: expanded.has(c.id) ? '1px solid var(--border)' : 'none' }}>
-                <div style={{ color: 'var(--muted)' }}>
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '12px',
+                  padding: '16px 20px', cursor: 'pointer',
+                  borderBottom: expanded.has(c.id) ? '1px solid rgba(15,23,42,0.07)' : 'none',
+                  transition: 'background 0.12s',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.background = '#F8FAFC')}
+                onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+              >
+                <div style={{ color: '#94A3B8', flexShrink: 0 }}>
                   {expanded.has(c.id) ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs font-mono px-2 py-0.5 rounded" style={{ background: 'var(--surface2)', color: 'var(--muted)' }}>
-                      {c.combiId}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '4px' }}>
+                    <span style={{
+                      fontSize: '11px', fontFamily: 'monospace', padding: '2px 7px', borderRadius: '5px',
+                      background: '#F1F5F9', color: '#64748B', fontWeight: 600,
+                    }}>{c.combiId}</span>
+                    <span style={{ fontSize: '13.5px', fontWeight: 700, color: '#0F172A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {c.nom}
                     </span>
-                    <span className="font-semibold text-sm text-white truncate">{c.nom}</span>
-                    {c.comp && <span className="text-xs" style={{ color: 'var(--muted)' }}>{c.comp}</span>}
+                    {c.comp && <span style={{ fontSize: '12px', color: '#94A3B8' }}>{c.comp}</span>}
                   </div>
-                  <p className="text-xs mt-1" style={{ color: 'var(--muted)' }}>
-                    {fmtDate(c.date)} • Mise {fmtEur(c.mise)} • Cote {c.cote > 0 ? c.cote.toFixed(2) + 'x' : '—'} • {c.legs.length} sélection{c.legs.length > 1 ? 's' : ''}
+                  <p style={{ fontSize: '12px', color: '#94A3B8' }}>
+                    {fmtDate(c.date)} &middot; Mise {fmtEur(c.mise)} &middot; Cote {c.cote > 0 ? c.cote.toFixed(2) + 'x' : '—'} &middot; {c.legs.length} sélection{c.legs.length > 1 ? 's' : ''}
                   </p>
                 </div>
-                <div className="flex items-center gap-3">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
                   <StatusBadge statut={c.statut} />
-                  <span className="font-display font-bold text-sm" style={{
-                    color: ['En cours', 'À compléter'].includes(c.statut) ? 'var(--muted)' : c.pl >= 0 ? 'var(--green)' : 'var(--red)',
+                  <span style={{
+                    fontSize: '13.5px', fontWeight: 700,
+                    color: ['En cours', 'À compléter'].includes(c.statut) ? '#64748B' : c.pl >= 0 ? '#059669' : '#DC2626',
                     fontVariantNumeric: 'tabular-nums',
                   }}>
-                    {['En cours', 'À compléter'].includes(c.statut) ? `Pot: +${fmtEur(c.mise * c.cote - c.mise)}` : (c.pl >= 0 ? '+' : '') + fmtEur(c.pl)}
+                    {['En cours', 'À compléter'].includes(c.statut)
+                      ? `Pot: +${fmtEur(c.mise * c.cote - c.mise)}`
+                      : (c.pl >= 0 ? '+' : '') + fmtEur(c.pl)}
                   </span>
-                  <button onClick={e => { e.stopPropagation(); deleteCombi(c.id); }}
-                    className="p-1.5 rounded-lg" style={{ color: 'var(--muted)' }}
-                    onMouseEnter={e => { e.currentTarget.style.color = 'var(--red)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.color = 'var(--muted)'; }}>
+                  <button
+                    onClick={e => { e.stopPropagation(); deleteCombi(c.id); }}
+                    style={{ padding: '6px', borderRadius: '7px', border: 'none', background: 'transparent', cursor: 'pointer', color: '#94A3B8', display: 'flex', alignItems: 'center', transition: 'all 0.12s' }}
+                    onMouseEnter={e => { e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.color = '#DC2626'; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#94A3B8'; }}
+                  >
                     <Trash2 size={13} />
                   </button>
                 </div>
@@ -139,30 +164,51 @@ export default function CombisPage() {
               {expanded.has(c.id) && (
                 <div>
                   {c.legs.map((leg, idx) => (
-                    <div key={leg.id} className="flex items-center gap-3 px-5 py-3"
-                      style={{ borderBottom: idx < c.legs.length - 1 ? '1px solid var(--border)' : 'none', background: 'var(--surface2)' }}>
-                      <span className="text-xs w-4 text-center font-bold" style={{ color: 'var(--muted)' }}>{idx + 1}</span>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm text-white">{leg.sel}</p>
-                        <p className="text-xs mt-0.5" style={{ color: 'var(--muted)' }}>
-                          {[leg.sport, leg.comp].filter(Boolean).join(' • ')}
+                    <div key={leg.id} style={{
+                      display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 20px',
+                      borderBottom: idx < c.legs.length - 1 ? '1px solid rgba(15,23,42,0.06)' : 'none',
+                      background: '#F8FAFC',
+                    }}>
+                      <span style={{ fontSize: '11px', width: '18px', textAlign: 'center', fontWeight: 700, color: '#94A3B8', flexShrink: 0 }}>
+                        {idx + 1}
+                      </span>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p style={{ fontSize: '13px', fontWeight: 600, color: '#1E293B', marginBottom: '2px' }}>{leg.sel}</p>
+                        <p style={{ fontSize: '11.5px', color: '#94A3B8' }}>
+                          {[leg.sport, leg.comp].filter(Boolean).join(' · ')}
                         </p>
                       </div>
-                      <span className="text-sm font-semibold" style={{ fontVariantNumeric: 'tabular-nums' }}>{leg.cote}x</span>
-                      <select value={leg.statut} onChange={e => updateLegStatut(c.id, leg.id, e.target.value)}
+                      <span style={{ fontSize: '13px', fontWeight: 700, color: '#0F172A', fontVariantNumeric: 'tabular-nums', flexShrink: 0 }}>
+                        {leg.cote}x
+                      </span>
+                      <select
+                        value={leg.statut}
+                        onChange={e => updateLegStatut(c.id, leg.id, e.target.value)}
                         onClick={e => e.stopPropagation()}
-                        className="text-xs px-2 py-1 rounded-lg"
-                        style={{ background: 'var(--surface)', border: '1px solid var(--border2)', color: 'var(--text)' }}>
+                        style={{
+                          fontSize: '12px', padding: '5px 10px', borderRadius: '8px',
+                          background: 'white', border: '1.5px solid rgba(15,23,42,0.12)',
+                          color: '#475569', cursor: 'pointer', flexShrink: 0,
+                          fontFamily: 'Inter, sans-serif',
+                        }}
+                      >
                         {STATUTS_LEG.map(s => <option key={s}>{s}</option>)}
                       </select>
                     </div>
                   ))}
-                  <div className="px-5 py-3">
-                    <button onClick={() => { setShowLegModal(c.id); setLegForm(emptyLeg()); }}
-                      className="flex items-center gap-2 text-xs px-3 py-2 rounded-xl transition-colors"
-                      style={{ color: 'var(--blue)', border: '1px dashed rgba(79,107,237,0.4)' }}
-                      onMouseEnter={e => (e.currentTarget.style.background = 'rgba(79,107,237,0.08)')}
-                      onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
+                  <div style={{ padding: '12px 20px' }}>
+                    <button
+                      onClick={() => { setShowLegModal(c.id); setLegForm(emptyLeg()); }}
+                      style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '6px',
+                        fontSize: '12.5px', padding: '7px 14px', borderRadius: '8px',
+                        color: '#2563EB', border: '1.5px dashed rgba(37,99,235,0.35)',
+                        background: 'transparent', cursor: 'pointer', fontFamily: 'Inter, sans-serif',
+                        fontWeight: 600, transition: 'background 0.12s',
+                      }}
+                      onMouseEnter={e => (e.currentTarget.style.background = '#EFF6FF')}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                    >
                       <Plus size={12} /> Ajouter une sélection
                     </button>
                   </div>
@@ -175,44 +221,39 @@ export default function CombisPage() {
 
       {/* Modal nouveau combiné */}
       <Modal title="Nouveau combiné" open={showCombiModal} onClose={() => setShowCombiModal(false)}>
-        <form onSubmit={saveCombi} className="flex flex-col gap-4">
-          <div className="grid grid-cols-2 gap-3">
+        <form onSubmit={saveCombi} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--muted)' }}>ID combiné</label>
-              <input value={combiForm.combiId} onChange={e => setC('combiId', e.target.value)} required
-                placeholder="LT1, LT2…" className="w-full px-3 py-2.5 rounded-xl text-sm" />
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748B', marginBottom: '6px' }}>ID combiné</label>
+              <input value={combiForm.combiId} onChange={e => setC('combiId', e.target.value)} required placeholder="LT1, LT2…" style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', fontSize: '13.5px' }} />
             </div>
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--muted)' }}>Date</label>
-              <input type="date" value={combiForm.date} onChange={e => setC('date', e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl text-sm" />
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748B', marginBottom: '6px' }}>Date</label>
+              <input type="date" value={combiForm.date} onChange={e => setC('date', e.target.value)} style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', fontSize: '13.5px' }} />
             </div>
           </div>
           <div>
-            <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--muted)' }}>Nom / description *</label>
-            <input value={combiForm.nom} onChange={e => setC('nom', e.target.value)} required
-              placeholder="Ligue 1 + Serie A + Champions League" className="w-full px-3 py-2.5 rounded-xl text-sm" />
+            <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748B', marginBottom: '6px' }}>Nom / description *</label>
+            <input value={combiForm.nom} onChange={e => setC('nom', e.target.value)} required placeholder="Ligue 1 + Serie A + Champions League" style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', fontSize: '13.5px' }} />
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--muted)' }}>Compétition</label>
-              <input value={combiForm.comp} onChange={e => setC('comp', e.target.value)}
-                placeholder="Optionnel" className="w-full px-3 py-2.5 rounded-xl text-sm" />
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748B', marginBottom: '6px' }}>Compétition</label>
+              <input value={combiForm.comp} onChange={e => setC('comp', e.target.value)} placeholder="Optionnel" style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', fontSize: '13.5px' }} />
             </div>
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--muted)' }}>Mise (€) *</label>
-              <input type="number" step="0.01" value={combiForm.mise} onChange={e => setC('mise', e.target.value)} required
-                placeholder="5.00" className="w-full px-3 py-2.5 rounded-xl text-sm" />
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748B', marginBottom: '6px' }}>Mise (€) *</label>
+              <input type="number" step="0.01" value={combiForm.mise} onChange={e => setC('mise', e.target.value)} required placeholder="5.00" style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', fontSize: '13.5px' }} />
             </div>
           </div>
-          <div className="flex gap-3 pt-1">
-            <button type="button" onClick={() => setShowCombiModal(false)}
-              className="flex-1 py-2.5 rounded-xl text-sm font-medium"
-              style={{ background: 'var(--surface2)', color: 'var(--muted)', border: '1px solid var(--border)' }}>
+          <div style={{ display: 'flex', gap: '12px', paddingTop: '4px' }}>
+            <button type="button" onClick={() => setShowCombiModal(false)} style={{
+              flex: 1, padding: '11px', borderRadius: '10px', border: '1.5px solid rgba(15,23,42,0.12)',
+              background: '#F8FAFC', color: '#64748B', fontSize: '13.5px', fontWeight: 600, cursor: 'pointer',
+            }}>
               Annuler
             </button>
-            <button type="submit" disabled={saving}
-              className="flex-1 btn-primary py-2.5 rounded-xl text-sm disabled:opacity-50">
+            <button type="submit" disabled={saving} className="btn-primary" style={{ flex: 1, justifyContent: 'center' }}>
               {saving ? 'Sauvegarde…' : 'Créer'}
             </button>
           </div>
@@ -221,47 +262,42 @@ export default function CombisPage() {
 
       {/* Modal ajout leg */}
       <Modal title="Ajouter une sélection" open={showLegModal !== null} onClose={() => setShowLegModal(null)}>
-        <form onSubmit={saveLeg} className="flex flex-col gap-4">
+        <form onSubmit={saveLeg} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div>
-            <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--muted)' }}>Sélection *</label>
-            <input value={legForm.sel} onChange={e => setL('sel', e.target.value)} required
-              placeholder="PSG Victoire, Nadal 1er set…" className="w-full px-3 py-2.5 rounded-xl text-sm" />
+            <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748B', marginBottom: '6px' }}>Sélection *</label>
+            <input value={legForm.sel} onChange={e => setL('sel', e.target.value)} required placeholder="PSG Victoire, Nadal 1er set…" style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', fontSize: '13.5px' }} />
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--muted)' }}>Sport</label>
-              <select value={legForm.sport} onChange={e => setL('sport', e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl text-sm">
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748B', marginBottom: '6px' }}>Sport</label>
+              <select value={legForm.sport} onChange={e => setL('sport', e.target.value)} style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', fontSize: '13.5px' }}>
                 <option value="">—</option>
                 {SPORTS.map(s => <option key={s}>{s}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--muted)' }}>Compétition</label>
-              <input value={legForm.comp} onChange={e => setL('comp', e.target.value)}
-                placeholder="Ligue 1…" className="w-full px-3 py-2.5 rounded-xl text-sm" />
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748B', marginBottom: '6px' }}>Compétition</label>
+              <input value={legForm.comp} onChange={e => setL('comp', e.target.value)} placeholder="Ligue 1…" style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', fontSize: '13.5px' }} />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--muted)' }}>Cote *</label>
-              <input type="number" step="0.01" value={legForm.cote} onChange={e => setL('cote', e.target.value)} required
-                placeholder="1.85" className="w-full px-3 py-2.5 rounded-xl text-sm" />
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748B', marginBottom: '6px' }}>Cote *</label>
+              <input type="number" step="0.01" value={legForm.cote} onChange={e => setL('cote', e.target.value)} required placeholder="1.85" style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', fontSize: '13.5px' }} />
             </div>
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--muted)' }}>Date</label>
-              <input type="date" value={legForm.date} onChange={e => setL('date', e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl text-sm" />
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748B', marginBottom: '6px' }}>Date</label>
+              <input type="date" value={legForm.date} onChange={e => setL('date', e.target.value)} style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', fontSize: '13.5px' }} />
             </div>
           </div>
-          <div className="flex gap-3 pt-1">
-            <button type="button" onClick={() => setShowLegModal(null)}
-              className="flex-1 py-2.5 rounded-xl text-sm font-medium"
-              style={{ background: 'var(--surface2)', color: 'var(--muted)', border: '1px solid var(--border)' }}>
+          <div style={{ display: 'flex', gap: '12px', paddingTop: '4px' }}>
+            <button type="button" onClick={() => setShowLegModal(null)} style={{
+              flex: 1, padding: '11px', borderRadius: '10px', border: '1.5px solid rgba(15,23,42,0.12)',
+              background: '#F8FAFC', color: '#64748B', fontSize: '13.5px', fontWeight: 600, cursor: 'pointer',
+            }}>
               Annuler
             </button>
-            <button type="submit" disabled={saving}
-              className="flex-1 btn-primary py-2.5 rounded-xl text-sm disabled:opacity-50">
+            <button type="submit" disabled={saving} className="btn-primary" style={{ flex: 1, justifyContent: 'center' }}>
               {saving ? 'Sauvegarde…' : 'Ajouter'}
             </button>
           </div>

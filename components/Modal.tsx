@@ -8,10 +8,10 @@ interface Props {
   open: boolean;
   onClose: () => void;
   children: React.ReactNode;
-  width?: string;
+  width?: number;
 }
 
-export default function Modal({ title, open, onClose, children, width = 'max-w-lg' }: Props) {
+export default function Modal({ title, open, onClose, children, width = 520 }: Props) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -36,21 +36,33 @@ export default function Modal({ title, open, onClose, children, width = 'max-w-l
   }, [open, onClose]);
 
   return (
-    <div ref={overlayRef} className="fixed inset-0 z-50 items-center justify-center p-4"
-      style={{ display: 'none', background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)' }}
-      onClick={e => { if (e.target === overlayRef.current) onClose(); }}>
-      <div ref={panelRef} className={`w-full ${width} rounded-2xl`}
-        style={{ background: 'var(--surface)', border: '1px solid var(--border2)', boxShadow: '0 32px 64px rgba(0,0,0,0.5)' }}>
-        <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'var(--border)' }}>
-          <h2 className="font-display font-semibold text-white">{title}</h2>
-          <button onClick={onClose} className="p-1.5 rounded-lg transition-colors"
-            style={{ color: 'var(--muted)' }}
-            onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface2)')}
-            onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
+    <div ref={overlayRef} style={{
+      display: 'none', position: 'fixed', inset: 0, zIndex: 50,
+      alignItems: 'center', justifyContent: 'center', padding: '16px',
+      background: 'rgba(15,23,42,0.5)', backdropFilter: 'blur(4px)',
+    }} onClick={e => { if (e.target === overlayRef.current) onClose(); }}>
+      <div ref={panelRef} style={{
+        width: '100%', maxWidth: `${width}px`, borderRadius: '16px',
+        background: '#FFFFFF', border: '1px solid rgba(15,23,42,0.1)',
+        boxShadow: '0 20px 60px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.08)',
+      }}>
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '18px 24px', borderBottom: '1px solid rgba(15,23,42,0.07)',
+        }}>
+          <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#0F172A' }}>{title}</h2>
+          <button onClick={onClose} style={{
+            padding: '6px', borderRadius: '8px', border: 'none',
+            background: 'transparent', cursor: 'pointer', color: '#94A3B8',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            transition: 'all 0.12s',
+          }}
+            onMouseEnter={e => { e.currentTarget.style.background = '#F1F5F9'; e.currentTarget.style.color = '#475569'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#94A3B8'; }}>
             <X size={16} />
           </button>
         </div>
-        <div className="px-6 py-5">{children}</div>
+        <div style={{ padding: '20px 24px' }}>{children}</div>
       </div>
     </div>
   );
