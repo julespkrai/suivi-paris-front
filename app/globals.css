@@ -151,4 +151,8 @@ input::placeholder { color: var(--muted2); }
 
   /* Undo toast — au-dessus de la bottom nav */
   .undo-toast { bottom: 76px !important; }
+
+  /* Page login */
+  .login-panel-left  { display: none !important; }
+  .login-logo-mobile { display: flex !important; }
 }

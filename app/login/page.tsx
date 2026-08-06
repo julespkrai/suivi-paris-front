@@ -44,8 +44,8 @@ export default function LoginPage() {
       minHeight: '100vh', display: 'flex', background: '#F1F5F9',
       fontFamily: 'Inter, system-ui, sans-serif',
     }}>
-      {/* Panneau gauche décoratif */}
-      <div style={{
+      {/* Panneau gauche décoratif — masqué sur mobile */}
+      <div className="login-panel-left" style={{
         width: '45%', background: 'linear-gradient(145deg, #1E3A8A 0%, #1d4ed8 50%, #2563EB 100%)',
         display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
         padding: '48px', position: 'relative', overflow: 'hidden',
@@ -98,6 +98,21 @@ export default function LoginPage() {
         padding: '40px',
       }}>
         <div style={{ width: '100%', maxWidth: '400px' }}>
+          {/* Logo visible uniquement sur mobile */}
+          <div className="login-logo-mobile" style={{
+            display: 'none', alignItems: 'center', gap: '10px', marginBottom: '32px', justifyContent: 'center',
+          }}>
+            <div style={{
+              width: '38px', height: '38px', borderRadius: '10px',
+              background: 'linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: '0 4px 12px rgba(37,99,235,0.3)',
+            }}>
+              <TrendingUp size={18} color="white" strokeWidth={2.5} />
+            </div>
+            <span style={{ fontSize: '18px', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.01em' }}>Suivi Paris</span>
+          </div>
+
           <div style={{ marginBottom: '36px' }}>
             <h1 style={{ fontSize: '26px', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em', marginBottom: '8px' }}>
               {mode === 'login' ? 'Connexion' : 'Créer un compte'}
