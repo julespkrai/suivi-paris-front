@@ -92,7 +92,7 @@ export default function LotoPage() {
       </div>
 
       {/* Stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '24px' }}>
+      <div className="stats-grid-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '24px' }}>
         {[
           { label: 'Mise totale', value: fmtEur(totalMise), color: '#0F172A', bg: '#F8FAFC', border: 'rgba(15,23,42,0.08)' },
           { label: 'Gains totaux', value: fmtEur(totalGain), color: '#059669', bg: '#ECFDF5', border: '#A7F3D0' },

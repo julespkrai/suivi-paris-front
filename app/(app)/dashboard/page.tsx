@@ -118,7 +118,7 @@ export default function Dashboard() {
           )}
 
           {/* Row 1 — 4 KPIs principaux */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '16px' }}>
+          <div className="stats-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '16px' }}>
             <KpiCard
               label="P/L Total"
               value={data.pl}
@@ -155,14 +155,14 @@ export default function Dashboard() {
           </div>
 
           {/* Row 2 — 3 KPIs secondaires */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '28px' }}>
+          <div className="stats-grid-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '28px' }}>
             <KpiCard label="Total déposé" value={data.dep} positive={null} icon={<ArrowDownLeft size={14} />} accent="#059669" delay={0.28} />
             <KpiCard label="Total retiré" value={data.ret} positive={null} icon={<ArrowUpRight size={14} />} delay={0.35} />
             <KpiCard label="Net dépôts" value={data.net} positive={data.net >= 0} icon={<Minus size={14} />} delay={0.42} />
           </div>
 
           {/* Row 3 — 2 blocs */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+          <div className="stats-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
 
             {/* Cette semaine */}
             <div style={{

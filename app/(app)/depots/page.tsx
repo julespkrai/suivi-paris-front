@@ -82,7 +82,7 @@ export default function DepotsPage() {
       </div>
 
       {/* Résumé par canal */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '16px' }}>
+      <div className="stats-grid-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '16px' }}>
         {CANAUX.map(canal => {
           const d = byCanal[canal] || { dep: 0, ret: 0 };
           const netCanal = d.dep - d.ret;
@@ -116,7 +116,7 @@ export default function DepotsPage() {
       </div>
 
       {/* Total global */}
-      <div style={{ display: 'flex', gap: '14px', marginBottom: '24px' }}>
+      <div className="flex-cards" style={{ display: 'flex', gap: '14px', marginBottom: '24px' }}>
         <div style={{ flex: 1, ...card, display: 'flex', alignItems: 'center', gap: '14px', background: '#ECFDF5', border: '1px solid #A7F3D0' }}>
           <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: '#059669', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
             <ArrowDown size={17} color="white" />

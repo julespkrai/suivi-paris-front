@@ -123,3 +123,32 @@ input::placeholder { color: var(--muted2); }
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
 }
+
+/* ── Responsive layout ────────────────────────────────────────── */
+.sidebar-desktop { display: flex; }
+.mobile-nav      { display: none; }
+
+@media (max-width: 767px) {
+  .sidebar-desktop { display: none !important; }
+  .mobile-nav      { display: flex !important; }
+  .app-main    { margin-left: 0 !important; }
+  .app-content { padding: 20px 16px 80px !important; max-width: 100% !important; }
+
+  /* Stat grids */
+  .stats-grid-4 { grid-template-columns: repeat(2, 1fr) !important; }
+  .stats-grid-3 { grid-template-columns: repeat(2, 1fr) !important; }
+  .stats-grid-2 { grid-template-columns: 1fr !important; }
+
+  /* Flex rows of cards */
+  .flex-cards              { flex-wrap: wrap !important; }
+  .flex-cards > *          { flex: 1 1 calc(50% - 7px) !important; min-width: 0 !important; }
+
+  /* Page headers */
+  .page-header { flex-wrap: wrap !important; gap: 12px !important; }
+
+  /* Tables */
+  .data-table { min-width: 520px; }
+
+  /* Undo toast — au-dessus de la bottom nav */
+  .undo-toast { bottom: 76px !important; }
+}

@@ -240,7 +240,7 @@ export default function ParisPage() {
 
       {/* Toast undo */}
       {undoItem && (
-        <div style={{
+        <div className="undo-toast" style={{
           position: 'fixed', bottom: '28px', left: '50%', transform: 'translateX(-50%)',
           display: 'flex', alignItems: 'center', gap: '14px',
           background: '#0F172A', color: 'white',
