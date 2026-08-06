@@ -8,7 +8,7 @@ const nav = [
   { href: '/dashboard', label: 'Dashboard', icon: BarChart3 },
   { href: '/paris', label: 'Paris Quotidien', icon: TrendingUp },
   { href: '/combis', label: 'Paris Longs Termes', icon: Layers },
-  { href: '/depots', label: 'Dépôts', icon: Wallet },
+  { href: '/depots', label: 'Dépôts & Retraits', icon: Wallet },
   { href: '/loto', label: 'Loto Foot', icon: Trophy },
   { href: '/community', label: 'Communauté', icon: Users },
   { href: '/corbeille', label: 'Corbeille', icon: Trash2 },

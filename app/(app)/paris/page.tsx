@@ -297,13 +297,9 @@ export default function ParisPage() {
             <input value={form.description} onChange={e => setF('description', e.target.value)} placeholder="PSG Victoire, Nadal 1er set…" style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', fontSize: '13.5px' }} />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
             <div>
-              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748B', marginBottom: '6px' }}>Cote base</label>
-              <input type="number" step="0.01" value={form.coteBase} onChange={e => setF('coteBase', e.target.value)} placeholder="1.50" style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', fontSize: '13.5px' }} />
-            </div>
-            <div>
-              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748B', marginBottom: '6px' }}>Cote finale *</label>
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#64748B', marginBottom: '6px' }}>Côte *</label>
               <input type="number" step="0.01" value={form.cote} onChange={e => setF('cote', e.target.value)} placeholder="1.85" required style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', fontSize: '13.5px' }} />
             </div>
             <div>
