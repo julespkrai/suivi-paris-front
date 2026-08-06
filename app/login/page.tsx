@@ -72,7 +72,7 @@ export default function LoginPage() {
       </div>
 
       {/* Carte principale */}
-      <div ref={cardRef} className="relative z-10 w-full" style={{ maxWidth: '520px' }}>
+      <div ref={cardRef} className="relative z-10 w-full" style={{ maxWidth: '560px' }}>
 
         {/* Logo */}
         <div className="flex flex-col items-center mb-10">
@@ -90,11 +90,12 @@ export default function LoginPage() {
         </div>
 
         {/* Card formulaire */}
-        <div className="rounded-3xl p-10" style={{
+        <div className="rounded-3xl" style={{
           background: 'rgba(15, 22, 40, 0.85)',
           backdropFilter: 'blur(20px)',
           border: '1px solid rgba(255,255,255,0.08)',
-          boxShadow: '0 32px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)'
+          boxShadow: '0 32px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05)',
+          padding: '52px 56px'
         }}>
 
           {/* Toggle Connexion / Inscription */}
