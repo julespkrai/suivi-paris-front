@@ -14,12 +14,16 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg)' }}>
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 rounded-full border-2 border-t-transparent animate-spin"
-            style={{ borderColor: 'var(--blue)', borderTopColor: 'transparent' }} />
-          <span className="text-sm" style={{ color: 'var(--muted)' }}>Chargement…</span>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+          <div style={{
+            width: '36px', height: '36px', borderRadius: '50%',
+            border: '2px solid var(--blue)', borderTopColor: 'transparent',
+            animation: 'spin 0.7s linear infinite'
+          }} />
+          <span style={{ fontSize: '13px', color: 'var(--muted)' }}>Chargement…</span>
         </div>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
   }
@@ -27,10 +31,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   if (!user) return null;
 
   return (
-    <div className="flex min-h-screen" style={{ background: 'var(--bg)' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg)' }}>
       <Sidebar />
-      <main className="flex-1 ml-60 min-h-screen">
-        <div className="max-w-6xl mx-auto px-8 py-8">
+      <main style={{ flex: 1, marginLeft: '240px', minHeight: '100vh' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '36px 32px' }}>
           {children}
         </div>
       </main>
