@@ -201,9 +201,24 @@ export default function CombisPage() {
                       </span>
                       {c.comp && <span style={{ fontSize: '12px', color: '#94A3B8' }}>{c.comp}</span>}
                     </div>
-                    <p style={{ fontSize: '12px', color: '#94A3B8' }}>
+                    <p style={{ fontSize: '12px', color: '#94A3B8', marginBottom: c.legs.length > 0 ? '8px' : '0' }}>
                       {fmtDate(c.date)} &middot; Mise {fmtEur(c.mise)} &middot; Cote {c.cote > 0 ? c.cote.toFixed(2) + 'x' : '—'} &middot; {c.legs.length} sélection{c.legs.length > 1 ? 's' : ''}
                     </p>
+                    {c.legs.length > 0 && (
+                      <div style={{ display: 'flex', gap: '3px', height: '6px' }}>
+                        {c.legs.map(leg => (
+                          <div key={leg.id} style={{
+                            flex: 1,
+                            borderRadius: '3px',
+                            background: leg.statut === 'Gagné' ? '#059669'
+                              : leg.statut === 'Perdu' ? '#DC2626'
+                              : leg.statut === 'Annulé' ? '#94A3B8'
+                              : '#BFDBFE',
+                            transition: 'background 0.4s ease',
+                          }} />
+                        ))}
+                      </div>
+                    )}
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
                     <StatusBadge statut={c.statut} />
@@ -241,7 +256,9 @@ export default function CombisPage() {
                       <div key={leg.id} style={{
                         display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 20px',
                         borderBottom: idx < c.legs.length - 1 ? '1px solid rgba(15,23,42,0.06)' : 'none',
-                        background: '#F8FAFC',
+                        borderLeft: `3px solid ${leg.statut === 'Gagné' ? '#059669' : leg.statut === 'Perdu' ? '#DC2626' : leg.statut === 'Annulé' ? '#94A3B8' : 'transparent'}`,
+                        background: leg.statut === 'Gagné' ? '#F0FDF4' : leg.statut === 'Perdu' ? '#FFF1F2' : leg.statut === 'Annulé' ? '#F1F5F9' : '#F8FAFC',
+                        transition: 'background 0.3s ease, border-left-color 0.3s ease',
                       }}>
                         <span style={{ fontSize: '11px', width: '18px', textAlign: 'center', fontWeight: 700, color: '#94A3B8', flexShrink: 0 }}>
                           {idx + 1}
