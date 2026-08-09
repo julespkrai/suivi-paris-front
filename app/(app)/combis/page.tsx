@@ -94,6 +94,11 @@ export default function CombisPage() {
     await api.delete(`/combis/${id}`); load();
   };
 
+  const deleteLeg = async (combiId: number, legId: number) => {
+    if (!confirm('Supprimer cette sélection ?')) return;
+    await api.delete(`/combis/${combiId}/legs/${legId}`); load();
+  };
+
   const setC = (k: keyof CombiForm, v: string) => setCombiForm(f => ({ ...f, [k]: v }));
   const setL = (k: keyof LegForm, v: string) => setLegForm(f => ({ ...f, [k]: v }));
 
@@ -263,6 +268,14 @@ export default function CombisPage() {
                         >
                           {STATUTS_LEG.map(s => <option key={s}>{s}</option>)}
                         </select>
+                        <button
+                          onClick={e => { e.stopPropagation(); deleteLeg(c.id, leg.id); }}
+                          style={{ padding: '6px', borderRadius: '7px', border: 'none', background: 'transparent', cursor: 'pointer', color: '#94A3B8', display: 'flex', alignItems: 'center', transition: 'all 0.12s', flexShrink: 0 }}
+                          onMouseEnter={e => { e.currentTarget.style.background = '#FEF2F2'; e.currentTarget.style.color = '#DC2626'; }}
+                          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#94A3B8'; }}
+                        >
+                          <Trash2 size={13} />
+                        </button>
                       </div>
                     ))}
                     <div style={{ padding: '12px 20px' }}>
