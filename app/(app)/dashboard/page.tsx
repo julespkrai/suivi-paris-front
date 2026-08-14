@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { api, DashboardData } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
 import KpiCard from '@/components/KpiCard';
-import { TrendingUp, TrendingDown, Zap, Target, Clock, ArrowDownLeft, ArrowUpRight, Minus, AlertCircle } from 'lucide-react';
+import { TrendingUp, TrendingDown, Zap, Clock, ArrowDownLeft, ArrowUpRight, Minus, AlertCircle } from 'lucide-react';
 
 const CANAL_COLORS: Record<string, string> = {
   Winamax: '#EA580C',
@@ -118,7 +118,7 @@ export default function Dashboard() {
           )}
 
           {/* Row 1 — 4 KPIs principaux */}
-          <div className="stats-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '16px' }}>
+          <div className="stats-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '16px' }}>
             <KpiCard
               label="P/L Total"
               value={data.pl}
@@ -126,15 +126,6 @@ export default function Dashboard() {
               icon={data.pl >= 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
               subtitle={data.roi !== null ? `ROI ${(data.roi * 100).toFixed(1)}%` : undefined}
               delay={0}
-            />
-            <KpiCard
-              label="Bankroll estimée"
-              value={data.bankroll}
-              positive={null}
-              accent="#2563EB"
-              icon={<Target size={14} />}
-              subtitle={data.engage > 0 ? `dont ${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(data.engage)} en jeu` : undefined}
-              delay={0.07}
             />
             <KpiCard
               label="Engagé en cours"
