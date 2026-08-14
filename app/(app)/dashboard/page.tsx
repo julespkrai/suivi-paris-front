@@ -133,7 +133,7 @@ export default function Dashboard() {
               positive={null}
               accent="#2563EB"
               icon={<Target size={14} />}
-              subtitle={`Net: ${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(data.net)}`}
+              subtitle={data.engage > 0 ? `dont ${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(data.engage)} en jeu` : undefined}
               delay={0.07}
             />
             <KpiCard
