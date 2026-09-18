@@ -3,14 +3,14 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth';
-import { TrendingUp, BarChart3, Wallet, Layers, Trophy, LogOut, ChevronRight, Users, Trash2, MoreHorizontal, X } from 'lucide-react';
+import { TrendingUp, BarChart3, Wallet, Layers, Trophy, LogOut, ChevronRight, Users, Trash2, MoreHorizontal, X, LineChart } from 'lucide-react';
 
 const mainNav = [
-  { href: '/dashboard', label: 'Dashboard', icon: BarChart3 },
-  { href: '/paris',     label: 'Paris',     icon: TrendingUp },
-  { href: '/combis',    label: 'Combinés',  icon: Layers },
-  { href: '/depots',    label: 'Dépôts',    icon: Wallet },
-  { href: '/loto',      label: 'Loto',      icon: Trophy },
+  { href: '/dashboard', label: 'Dashboard',    icon: BarChart3 },
+  { href: '/paris',     label: 'Paris',        icon: TrendingUp },
+  { href: '/combis',    label: 'Combinés',     icon: Layers },
+  { href: '/stats',     label: 'Stats',        icon: LineChart },
+  { href: '/depots',    label: 'Dépôts',       icon: Wallet },
 ];
 
 const moreNav = [
@@ -22,6 +22,7 @@ const allNav = [
   { href: '/dashboard',  label: 'Dashboard',         icon: BarChart3  },
   { href: '/paris',      label: 'Paris Quotidien',    icon: TrendingUp },
   { href: '/combis',     label: 'Paris Longs Termes', icon: Layers     },
+  { href: '/stats',      label: 'Statistiques',       icon: LineChart  },
   { href: '/depots',     label: 'Dépôts & Retraits',  icon: Wallet     },
   { href: '/loto',       label: 'Loto Foot',          icon: Trophy     },
   { href: '/community',  label: 'Communauté',         icon: Users      },

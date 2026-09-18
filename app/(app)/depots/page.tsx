@@ -97,11 +97,11 @@ export default function DepotsPage() {
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
                 <div>
                   <p style={{ fontSize: '11px', color: '#94A3B8', marginBottom: '2px' }}>Dépôts</p>
-                  <p style={{ fontSize: '14px', fontWeight: 700, color: '#059669', fontVariantNumeric: 'tabular-nums' }}>{fmtEur(d.dep)}</p>
+                  <p style={{ fontSize: '14px', fontWeight: 700, color: '#DC2626', fontVariantNumeric: 'tabular-nums' }}>{fmtEur(d.dep)}</p>
                 </div>
                 <div style={{ textAlign: 'right' }}>
                   <p style={{ fontSize: '11px', color: '#94A3B8', marginBottom: '2px' }}>Retraits</p>
-                  <p style={{ fontSize: '14px', fontWeight: 700, color: '#DC2626', fontVariantNumeric: 'tabular-nums' }}>{fmtEur(d.ret)}</p>
+                  <p style={{ fontSize: '14px', fontWeight: 700, color: '#059669', fontVariantNumeric: 'tabular-nums' }}>{fmtEur(d.ret)}</p>
                 </div>
               </div>
               <div style={{ paddingTop: '10px', borderTop: '1px solid rgba(15,23,42,0.07)' }}>
@@ -117,22 +117,22 @@ export default function DepotsPage() {
 
       {/* Total global */}
       <div className="flex-cards" style={{ display: 'flex', gap: '14px', marginBottom: '24px' }}>
-        <div style={{ flex: 1, ...card, display: 'flex', alignItems: 'center', gap: '14px', background: '#ECFDF5', border: '1px solid #A7F3D0' }}>
-          <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: '#059669', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <div style={{ flex: 1, ...card, display: 'flex', alignItems: 'center', gap: '14px', background: '#FEF2F2', border: '1px solid #FECACA' }}>
+          <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: '#DC2626', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
             <ArrowDown size={17} color="white" />
           </div>
           <div>
-            <p style={{ fontSize: '11.5px', color: '#065F46', fontWeight: 500, marginBottom: '2px' }}>Total déposé</p>
-            <p style={{ fontSize: '20px', fontWeight: 800, color: '#059669', fontVariantNumeric: 'tabular-nums' }}>{fmtEur(totalDep)}</p>
+            <p style={{ fontSize: '11.5px', color: '#7F1D1D', fontWeight: 500, marginBottom: '2px' }}>Total déposé</p>
+            <p style={{ fontSize: '20px', fontWeight: 800, color: '#DC2626', fontVariantNumeric: 'tabular-nums' }}>{fmtEur(totalDep)}</p>
           </div>
         </div>
-        <div style={{ flex: 1, ...card, display: 'flex', alignItems: 'center', gap: '14px', background: '#FEF2F2', border: '1px solid #FECACA' }}>
-          <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: '#DC2626', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <div style={{ flex: 1, ...card, display: 'flex', alignItems: 'center', gap: '14px', background: '#ECFDF5', border: '1px solid #A7F3D0' }}>
+          <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: '#059669', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
             <ArrowUp size={17} color="white" />
           </div>
           <div>
-            <p style={{ fontSize: '11.5px', color: '#7F1D1D', fontWeight: 500, marginBottom: '2px' }}>Total retiré</p>
-            <p style={{ fontSize: '20px', fontWeight: 800, color: '#DC2626', fontVariantNumeric: 'tabular-nums' }}>{fmtEur(totalRet)}</p>
+            <p style={{ fontSize: '11.5px', color: '#065F46', fontWeight: 500, marginBottom: '2px' }}>Total retiré</p>
+            <p style={{ fontSize: '20px', fontWeight: 800, color: '#059669', fontVariantNumeric: 'tabular-nums' }}>{fmtEur(totalRet)}</p>
           </div>
         </div>
         <div style={{ flex: 1, ...card, display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -175,10 +175,10 @@ export default function DepotsPage() {
                       background: CANAL_BG[d.canal] || '#F8FAFC', color: CANAL_COLOR[d.canal] || '#475569',
                     }}>{d.canal}</span>
                   </td>
-                  <td style={{ textAlign: 'right', fontSize: '13px', color: '#059669', fontVariantNumeric: 'tabular-nums' }}>
+                  <td style={{ textAlign: 'right', fontSize: '13px', color: '#DC2626', fontVariantNumeric: 'tabular-nums' }}>
                     {d.depot ? fmtEur(d.depot) : '—'}
                   </td>
-                  <td style={{ textAlign: 'right', fontSize: '13px', color: '#DC2626', fontVariantNumeric: 'tabular-nums' }}>
+                  <td style={{ textAlign: 'right', fontSize: '13px', color: '#059669', fontVariantNumeric: 'tabular-nums' }}>
                     {d.retrait ? fmtEur(d.retrait) : '—'}
                   </td>
                   <td style={{ textAlign: 'right', fontSize: '13px', fontWeight: 700, color: '#0F172A', fontVariantNumeric: 'tabular-nums' }}>
