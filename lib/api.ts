@@ -67,7 +67,7 @@ export interface CorbeilleItem {
 export interface Pari {
   id: number; canal: string; sport?: string; competition?: string; type?: string;
   description?: string; coteBase?: number; cote: number; mise: number;
-  statut: string; retourSaisi?: number; date: string; pl: number;
+  statut: string; retourSaisi?: number; freebet: boolean; date: string; pl: number;
 }
 
 export interface Depot {

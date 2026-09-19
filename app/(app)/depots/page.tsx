@@ -4,9 +4,9 @@ import { api, Depot } from '@/lib/api';
 import Modal from '@/components/Modal';
 import { Plus, Trash2, ArrowDown, ArrowUp, Wallet } from 'lucide-react';
 
-const CANAUX = ['Winamax', 'Betclic', 'Tabac'];
-const CANAL_COLOR: Record<string, string> = { Winamax: '#EA580C', Betclic: '#2563EB', Tabac: '#D97706' };
-const CANAL_BG: Record<string, string> = { Winamax: '#FFF7ED', Betclic: '#EFF6FF', Tabac: '#FFFBEB' };
+const CANAUX = ['Winamax', 'Betclic', 'Unibet', 'Tabac'];
+const CANAL_COLOR: Record<string, string> = { Winamax: '#EA580C', Betclic: '#2563EB', Unibet: '#16A34A', Tabac: '#D97706' };
+const CANAL_BG: Record<string, string> = { Winamax: '#FFF7ED', Betclic: '#EFF6FF', Unibet: '#F0FDF4', Tabac: '#FFFBEB' };
 const fmtEur = (v: number | undefined) => v != null ? new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(v) : '—';
 const fmtDate = (d: string) => new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' });
 

@@ -5,18 +5,18 @@ import Modal from '@/components/Modal';
 import StatusBadge from '@/components/StatusBadge';
 import { Plus, Trash2, Edit2, TrendingUp, Filter, RotateCcw } from 'lucide-react';
 
-const CANAUX = ['Winamax', 'Betclic', 'Tabac'];
+const CANAUX = ['Winamax', 'Betclic', 'Unibet', 'Tabac'];
 const STATUTS = ['En cours', 'Gagné', 'Perdu', 'Cash Out', 'Remboursé', 'Annulé'];
 const SPORTS = ['Football', 'Tennis', 'Basketball', 'Rugby', 'Hockey', 'Cyclisme', 'F1', 'Autre'];
 
 const fmtEur = (v: number) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(v);
 const fmtDate = (d: string) => new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' });
 
-const CANAL_COLOR: Record<string, string> = { Winamax: '#EA580C', Betclic: '#2563EB', Tabac: '#D97706' };
-const CANAL_BG: Record<string, string> = { Winamax: '#FFF7ED', Betclic: '#EFF6FF', Tabac: '#FFFBEB' };
+const CANAL_COLOR: Record<string, string> = { Winamax: '#EA580C', Betclic: '#2563EB', Unibet: '#16A34A', Tabac: '#D97706' };
+const CANAL_BG: Record<string, string> = { Winamax: '#FFF7ED', Betclic: '#EFF6FF', Unibet: '#F0FDF4', Tabac: '#FFFBEB' };
 
-type FormData = { canal: string; sport: string; competition: string; type: string; description: string; coteBase: string; cote: string; mise: string; statut: string; retourSaisi: string; date: string };
-const emptyForm = (): FormData => ({ canal: 'Winamax', sport: '', competition: '', type: '', description: '', coteBase: '', cote: '', mise: '', statut: 'En cours', retourSaisi: '', date: new Date().toISOString().split('T')[0] });
+type FormData = { canal: string; sport: string; competition: string; type: string; description: string; coteBase: string; cote: string; mise: string; statut: string; retourSaisi: string; freebet: boolean; date: string };
+const emptyForm = (): FormData => ({ canal: 'Winamax', sport: '', competition: '', type: '', description: '', coteBase: '', cote: '', mise: '', statut: 'En cours', retourSaisi: '', freebet: false, date: new Date().toISOString().split('T')[0] });
 
 const selectStyle: React.CSSProperties = {
   padding: '10px 14px', borderRadius: '10px', fontSize: '13px',
@@ -62,6 +62,7 @@ export default function ParisPage() {
       coteBase: p.coteBase?.toString() || '', cote: p.cote.toString(),
       mise: p.mise.toString(), statut: p.statut,
       retourSaisi: p.retourSaisi?.toString() || '',
+      freebet: p.freebet ?? false,
       date: p.date,
     });
     setShowModal(true);
@@ -77,6 +78,7 @@ export default function ParisPage() {
       cote: parseFloat(form.cote), mise: parseFloat(form.mise),
       statut: form.statut,
       retourSaisi: form.retourSaisi ? parseFloat(form.retourSaisi) : null,
+      freebet: form.freebet,
       date: form.date,
     };
     try {
@@ -196,6 +198,11 @@ export default function ParisPage() {
                     </td>
                     <td style={{ fontSize: '13px', color: '#64748B' }}>{p.sport || '—'}</td>
                     <td style={{ fontSize: '13px', color: '#1E293B', maxWidth: '260px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {p.freebet && (
+                        <span style={{ fontSize: '10px', fontWeight: 700, padding: '1px 6px', borderRadius: '4px', background: '#F0FDF4', color: '#16A34A', border: '1px solid #86EFAC', marginRight: '6px' }}>
+                          FB
+                        </span>
+                      )}
                       {p.description || p.type || '—'}
                     </td>
                     <td style={{ textAlign: 'right', fontSize: '13px', fontWeight: 600, color: '#0F172A' }}>{p.cote}x</td>
@@ -307,6 +314,15 @@ export default function ParisPage() {
               <input type="number" step="0.01" value={form.mise} onChange={e => setF('mise', e.target.value)} placeholder="10.00" required style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', fontSize: '13.5px' }} />
             </div>
           </div>
+
+          {/* Freebet toggle */}
+          <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', padding: '10px 14px', borderRadius: '10px', background: form.freebet ? '#F0FDF4' : '#F8FAFC', border: `1.5px solid ${form.freebet ? '#86EFAC' : 'rgba(15,23,42,0.1)'}`, transition: 'all 0.15s' }}>
+            <input type="checkbox" checked={form.freebet} onChange={e => setForm(f => ({ ...f, freebet: e.target.checked }))} style={{ width: '16px', height: '16px', accentColor: '#16A34A', cursor: 'pointer' }} />
+            <div>
+              <p style={{ fontSize: '13px', fontWeight: 600, color: form.freebet ? '#16A34A' : '#475569' }}>Freebet</p>
+              <p style={{ fontSize: '11.5px', color: '#94A3B8' }}>La mise ne coûte rien — seul le gain net compte dans le P/L</p>
+            </div>
+          </label>
 
           <div style={{ display: 'grid', gridTemplateColumns: showRetour ? '1fr 1fr' : '1fr', gap: '12px' }}>
             <div>
