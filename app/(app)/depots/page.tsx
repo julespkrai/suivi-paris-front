@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { api, Depot } from '@/lib/api';
 import Modal from '@/components/Modal';
-import { Plus, Trash2, ArrowDown, ArrowUp, Wallet } from 'lucide-react';
+import { Plus, Trash2, ArrowDown, ArrowUp, Wallet, Edit2 } from 'lucide-react';
 
 const CANAUX = ['Winamax', 'Betclic', 'Unibet', 'Tabac'];
 const CANAL_COLOR: Record<string, string> = { Winamax: '#EA580C', Betclic: '#2563EB', Unibet: '#16A34A', Tabac: '#D97706' };
@@ -23,6 +23,7 @@ export default function DepotsPage() {
   const [depots, setDepots] = useState<Depot[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState<FormData>(emptyForm());
   const [saving, setSaving] = useState(false);
 
@@ -36,18 +37,29 @@ export default function DepotsPage() {
   const totalRet = depots.reduce((s, d) => s + (d.retrait || 0), 0);
   const net = totalDep - totalRet;
 
+  const openEdit = (d: Depot) => {
+    setEditingId(d.id);
+    setForm({ canal: d.canal, depot: d.depot ? String(d.depot) : '', retrait: d.retrait ? String(d.retrait) : '', date: d.date });
+    setShowModal(true);
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.depot && !form.retrait) return;
     setSaving(true);
     try {
-      await api.post('/depots', {
+      const body = {
         canal: form.canal,
         depot: form.depot ? parseFloat(form.depot) : null,
         retrait: form.retrait ? parseFloat(form.retrait) : null,
         date: form.date,
-      });
-      load(); setShowModal(false); setForm(emptyForm());
+      };
+      if (editingId !== null) {
+        await api.put(`/depots/${editingId}`, body);
+      } else {
+        await api.post('/depots', body);
+      }
+      load(); setShowModal(false); setForm(emptyForm()); setEditingId(null);
     } catch { setSaving(false); return; }
     finally { setSaving(false); }
   };
@@ -76,7 +88,7 @@ export default function DepotsPage() {
           </h1>
           <p style={{ fontSize: '13.5px', color: '#64748B' }}>{depots.length} mouvements enregistrés</p>
         </div>
-        <button onClick={() => { setShowModal(true); setForm(emptyForm()); }} className="btn-primary">
+        <button onClick={() => { setShowModal(true); setForm(emptyForm()); setEditingId(null); }} className="btn-primary">
           <Plus size={15} /> Ajouter
         </button>
       </div>
@@ -185,7 +197,16 @@ export default function DepotsPage() {
                     {fmtEur((d.depot || 0) - (d.retrait || 0))}
                   </td>
                   <td>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '4px' }}>
+                      <button onClick={() => openEdit(d)} style={{
+                        padding: '6px', borderRadius: '7px', border: 'none',
+                        background: 'transparent', cursor: 'pointer', color: '#94A3B8',
+                        display: 'flex', alignItems: 'center', transition: 'all 0.12s',
+                      }}
+                        onMouseEnter={e => { e.currentTarget.style.background = '#EFF6FF'; e.currentTarget.style.color = '#2563EB'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#94A3B8'; }}>
+                        <Edit2 size={13} />
+                      </button>
                       <button onClick={() => handleDelete(d.id)} style={{
                         padding: '6px', borderRadius: '7px', border: 'none',
                         background: 'transparent', cursor: 'pointer', color: '#94A3B8',
@@ -205,7 +226,7 @@ export default function DepotsPage() {
         )}
       </div>
 
-      <Modal title="Ajouter un mouvement" open={showModal} onClose={() => setShowModal(false)}>
+      <Modal title={editingId !== null ? 'Modifier le mouvement' : 'Ajouter un mouvement'} open={showModal} onClose={() => { setShowModal(false); setEditingId(null); }}>
         <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
             <div>
@@ -231,7 +252,7 @@ export default function DepotsPage() {
           </div>
           <p style={{ fontSize: '12px', color: '#94A3B8' }}>Remplissez au moins l'un des deux champs.</p>
           <div style={{ display: 'flex', gap: '12px', paddingTop: '4px' }}>
-            <button type="button" onClick={() => setShowModal(false)} style={{
+            <button type="button" onClick={() => { setShowModal(false); setEditingId(null); }} style={{
               flex: 1, padding: '11px', borderRadius: '10px', border: '1.5px solid rgba(15,23,42,0.12)',
               background: '#F8FAFC', color: '#64748B', fontSize: '13.5px', fontWeight: 600, cursor: 'pointer',
             }}>
